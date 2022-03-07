@@ -7,9 +7,7 @@ const movies = [
     {
         title: "Movie 2",
     },
-    {
-        title: "Movie 3",
-    },
+
 ];
 
 export function MoviesApi(mongoDatabase) {
