@@ -1,40 +1,40 @@
-import {Router} from "express";
+import { Router } from "express";
 
 export function MoviesApi(mongoDatabase) {
-    const router = new Router();
+  const router = new Router();
 
-    router.get("/", async (req, res) => {
-      const movies = await mongoDatabase.collection("movies")
-          .find({
-              countries: {
-                  $in: ["Pakistan"],
-              },
-              year: {
-                  $gte: 2000,
-              },
-          })
-          .sort({
-              metacritic: -1
-          })
-          .map(({ title, year, plot, genre, poster }) => ({
-            title,
-            year,
-            plot,
-            genre,
-            poster,
-        }))
-          .limit(50)
-          .toArray();
-        res.json(movies);
-    });
+  router.get("/", async (req, res) => {
+    const query = {
+      year: { $gte: 2000 },
+    };
+    const { country } = req.query;
+    if (country) {
+      query.countries = { $in: [country] };
+    }
+    const movies = await mongoDatabase
+      .collection("movies")
+      .find(query)
+      .sort({ metacritic: -1 })
+      .map(({ title, year, plot, genre, poster }) => ({
+        title,
+        year,
+        plot,
+        genre,
+        poster,
+      }))
+      .limit(100)
+      .toArray();
+    res.json(movies);
+  });
 
-    router.post("/new", (req, res) => {
-        const { title } = req.body;
-        const result = mongoDatabase.collection("movies").insertOne({
-            title,
-        });
-        res.sendStatus(500);
-    });
+  router.post("/", (req, res) => {
+    const { title, country, year, plot } = req.body;
+    const countries = [country];
+    mongoDatabase
+      .collection("movies")
+      .insertOne({ title, countries, year, plot });
+    res.sendStatus(200);
+  });
 
-    return router;
+  return router;
 }
