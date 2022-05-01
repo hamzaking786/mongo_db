@@ -34,6 +34,7 @@ export function LoginCallback({ reload, config }) {
         code,
         client_id,
         code_verifier,
+        redirect_uri: `${window.location.origin}/login/${provider}/callback`,
       };
       const res = await fetch(token_endpoint, {
         method: "POST",
@@ -132,10 +133,15 @@ function StartLogin({ config }) {
         config={config}
         provider={"google"}
       />
-      <LoginButton
+     {/* <LoginButton
         label={"Login with ID-porten"}
         config={config}
         provider={"idporten"}
+      />*/}
+      <LoginButton
+          label={"Login with Microsoft"}
+          config={config}
+          provider={"microsoft"}
       />
     </div>
   );
