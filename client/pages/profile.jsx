@@ -6,4 +6,4 @@ export function Profile({ user }) {
       <pre>{JSON.stringify(user, undefined, "  ")}</pre>
     </div>
   );
-}
+}   
